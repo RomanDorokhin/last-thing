@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createRouter, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { scores } from "db/schema";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, asc, eq, sql } from "drizzle-orm";
 
 export const gameRouter = createRouter({
   submitScore: publicQuery
@@ -52,7 +52,7 @@ export const gameRouter = createRouter({
         })
         .from(scores)
         .where(eq(scores.completed, "true"))
-        .orderBy(desc(scores.totalTime))
+        .orderBy(asc(scores.totalTime))
         .limit(input.limit);
       return results;
     }),
