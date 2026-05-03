@@ -1160,4 +1160,5 @@ export function resetGameState() {
   G.combo = 0;
   G.score = 0;
   G.invulnerable = 120;
+  G.keys = {};
 }

@@ -95,17 +95,17 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
     const down = (e: KeyboardEvent) => {
       G.keys[e.code] = true;
       engineRef.current?.handleKey(e.code, e.key, true);
-      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+      if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(e.code)) e.preventDefault();
     };
     const up = (e: KeyboardEvent) => {
       G.keys[e.code] = false;
       engineRef.current?.handleKey(e.code, e.key, false);
     };
-    window.addEventListener('keydown', down);
-    window.addEventListener('keyup', up);
+    window.addEventListener('keydown', down, { capture: true });
+    window.addEventListener('keyup', up, { capture: true });
     return () => {
-      window.removeEventListener('keydown', down);
-      window.removeEventListener('keyup', up);
+      window.removeEventListener('keydown', down, { capture: true });
+      window.removeEventListener('keyup', up, { capture: true });
     };
   }, []);
 
