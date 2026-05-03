@@ -39,7 +39,6 @@ export default function Game() {
 
   const handleRestart = () => {
     setStatus('playing');
-    window.location.reload();
   };
 
   const toggleSound = () => {
