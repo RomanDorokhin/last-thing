@@ -85,7 +85,7 @@ export const PHASES: PhaseConfig[] = [
 export const W = 480;
 export const H = 720;
 
-export const G: GameState = {
+export const G: GameState = (window as any).G = {
   phase: 0,
   noise: 0,
   running: false,

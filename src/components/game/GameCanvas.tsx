@@ -89,12 +89,12 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
   // Keyboard and Focus Handling
   useEffect(() => {
     const handleKey = (code: string, isDown: boolean) => {
-      G.keys[code] = isDown;
+      ((window as any).G).keys[code] = isDown;
       // Map WASD to Arrows
-      if (code === 'KeyW' || code === 'w' || code === 'W') G.keys['ArrowUp'] = isDown;
-      if (code === 'KeyA' || code === 'a' || code === 'A') G.keys['ArrowLeft'] = isDown;
-      if (code === 'KeyS' || code === 's' || code === 'S') G.keys['ArrowDown'] = isDown;
-      if (code === 'KeyD' || code === 'd' || code === 'D') G.keys['ArrowRight'] = isDown;
+      if (code === 'KeyW' || code === 'w' || code === 'W') ((window as any).G).keys['ArrowUp'] = isDown;
+      if (code === 'KeyA' || code === 'a' || code === 'A') ((window as any).G).keys['ArrowLeft'] = isDown;
+      if (code === 'KeyS' || code === 's' || code === 'S') ((window as any).G).keys['ArrowDown'] = isDown;
+      if (code === 'KeyD' || code === 'd' || code === 'D') ((window as any).G).keys['ArrowRight'] = isDown;
       
       engineRef.current?.handleKey(code, '', isDown);
     };
@@ -156,38 +156,38 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
             <div />
             <button 
               className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
-              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowUp"] = true; }}
-              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowUp"] = false; }}
-              onMouseDown={() => G.keys["ArrowUp"] = true}
-              onMouseUp={() => G.keys["ArrowUp"] = false}
+              onTouchStart={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowUp"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowUp"] = false; }}
+              onMouseDown={() => ((window as any).G).keys["ArrowUp"] = true}
+              onMouseUp={() => ((window as any).G).keys["ArrowUp"] = false}
             >
               <ArrowUp className="w-6 h-6 text-white" />
             </button>
             <div />
             <button 
               className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
-              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowLeft"] = true; }}
-              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowLeft"] = false; }}
-              onMouseDown={() => G.keys["ArrowLeft"] = true}
-              onMouseUp={() => G.keys["ArrowLeft"] = false}
+              onTouchStart={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowLeft"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowLeft"] = false; }}
+              onMouseDown={() => ((window as any).G).keys["ArrowLeft"] = true}
+              onMouseUp={() => ((window as any).G).keys["ArrowLeft"] = false}
             >
               <ArrowLeft className="w-6 h-6 text-white" />
             </button>
             <button 
               className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
-              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowDown"] = true; }}
-              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowDown"] = false; }}
-              onMouseDown={() => G.keys["ArrowDown"] = true}
-              onMouseUp={() => G.keys["ArrowDown"] = false}
+              onTouchStart={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowDown"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowDown"] = false; }}
+              onMouseDown={() => ((window as any).G).keys["ArrowDown"] = true}
+              onMouseUp={() => ((window as any).G).keys["ArrowDown"] = false}
             >
               <ArrowDown className="w-6 h-6 text-white" />
             </button>
             <button 
               className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
-              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowRight"] = true; }}
-              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowRight"] = false; }}
-              onMouseDown={() => G.keys["ArrowRight"] = true}
-              onMouseUp={() => G.keys["ArrowRight"] = false}
+              onTouchStart={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowRight"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); ((window as any).G).keys["ArrowRight"] = false; }}
+              onMouseDown={() => ((window as any).G).keys["ArrowRight"] = true}
+              onMouseUp={() => ((window as any).G).keys["ArrowRight"] = false}
             >
               <ArrowRight className="w-6 h-6 text-white" />
             </button>
@@ -196,20 +196,20 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
           <div className="absolute bottom-8 right-8 flex flex-col gap-4 pointer-events-auto">
             <button 
               className="w-20 h-20 bg-indigo-500/30 backdrop-blur-md rounded-full border border-indigo-400/40 active:bg-indigo-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-indigo-500/20 touch-none"
-              onTouchStart={(e) => { e.preventDefault(); G.keys["Space"] = true; }}
-              onTouchEnd={(e) => { e.preventDefault(); G.keys["Space"] = false; }}
-              onMouseDown={() => G.keys["Space"] = true}
-              onMouseUp={() => G.keys["Space"] = false}
+              onTouchStart={(e) => { e.preventDefault(); ((window as any).G).keys["Space"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); ((window as any).G).keys["Space"] = false; }}
+              onMouseDown={() => ((window as any).G).keys["Space"] = true}
+              onMouseUp={() => ((window as any).G).keys["Space"] = false}
             >
               <div className="text-[10px] text-indigo-200 font-bold mb-1">JUMP</div>
               <ArrowUp className="w-6 h-6 text-white" />
             </button>
             <button 
               className="w-16 h-16 bg-red-500/30 backdrop-blur-md rounded-full border border-red-400/40 active:bg-red-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-red-500/20 touch-none"
-              onTouchStart={(e) => { e.preventDefault(); G.keys["KeyE"] = true; }}
-              onTouchEnd={(e) => { e.preventDefault(); G.keys["KeyE"] = false; }}
-              onMouseDown={() => G.keys["KeyE"] = true}
-              onMouseUp={() => G.keys["KeyE"] = false}
+              onTouchStart={(e) => { e.preventDefault(); ((window as any).G).keys["KeyE"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); ((window as any).G).keys["KeyE"] = false; }}
+              onMouseDown={() => ((window as any).G).keys["KeyE"] = true}
+              onMouseUp={() => ((window as any).G).keys["KeyE"] = false}
             >
               <div className="text-[10px] text-red-200 font-bold">FIRE</div>
             </button>

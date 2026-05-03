@@ -70,10 +70,10 @@ class StealthPhase {
   update(ps: ParticleSystem) {
     const spd = this.speed * G.dt * 60;
     let nx = this.px, ny = this.py;
-    if (G.keys['ArrowLeft'] || G.keys['KeyA']) nx -= spd;
-    if (G.keys['ArrowRight'] || G.keys['KeyD']) nx += spd;
-    if (G.keys['ArrowUp'] || G.keys['KeyW']) ny -= spd;
-    if (G.keys['ArrowDown'] || G.keys['KeyS']) ny += spd;
+    if (((window as any).G).keys['ArrowLeft'] || ((window as any).G).keys['KeyA']) nx -= spd;
+    if (((window as any).G).keys['ArrowRight'] || ((window as any).G).keys['KeyD']) nx += spd;
+    if (((window as any).G).keys['ArrowUp'] || ((window as any).G).keys['KeyW']) ny -= spd;
+    if (((window as any).G).keys['ArrowDown'] || ((window as any).G).keys['KeyS']) ny += spd;
     nx = clamp(nx, 12, W - 12);
     ny = clamp(ny, 50, H - 30);
     if (!this.collidesWall(nx, this.py)) this.px = nx;
@@ -460,10 +460,10 @@ class ChasePhase {
   update(ps: ParticleSystem) {
     const spd = this.speed * G.dt * 60;
     let nx = this.px, ny = this.py;
-    if (G.keys['ArrowLeft'] || G.keys['KeyA']) nx -= spd * 1.4;
-    if (G.keys['ArrowRight'] || G.keys['KeyD']) nx += spd * 1.4;
-    if (G.keys['ArrowUp'] || G.keys['KeyW']) ny -= spd;
-    if (G.keys['ArrowDown'] || G.keys['KeyS']) ny += spd * 0.6;
+    if (((window as any).G).keys['ArrowLeft'] || ((window as any).G).keys['KeyA']) nx -= spd * 1.4;
+    if (((window as any).G).keys['ArrowRight'] || ((window as any).G).keys['KeyD']) nx += spd * 1.4;
+    if (((window as any).G).keys['ArrowUp'] || ((window as any).G).keys['KeyW']) ny -= spd;
+    if (((window as any).G).keys['ArrowDown'] || ((window as any).G).keys['KeyS']) ny += spd * 0.6;
     nx = clamp(nx, 16, W - 16);
     ny = clamp(ny, H * 0.4, H - 20);
 
@@ -651,17 +651,17 @@ class ShooterPhase {
   update(ps: ParticleSystem) {
     const spd = 4 * G.dt * 60;
     let nx = this.px, ny = this.py;
-    if (G.keys['ArrowLeft'] || G.keys['KeyA']) nx -= spd * 1.5;
-    if (G.keys['ArrowRight'] || G.keys['KeyD']) nx += spd * 1.5;
-    if (G.keys['ArrowUp'] || G.keys['KeyW']) ny -= spd;
-    if (G.keys['ArrowDown'] || G.keys['KeyS']) ny += spd;
+    if (((window as any).G).keys['ArrowLeft'] || ((window as any).G).keys['KeyA']) nx -= spd * 1.5;
+    if (((window as any).G).keys['ArrowRight'] || ((window as any).G).keys['KeyD']) nx += spd * 1.5;
+    if (((window as any).G).keys['ArrowUp'] || ((window as any).G).keys['KeyW']) ny -= spd;
+    if (((window as any).G).keys['ArrowDown'] || ((window as any).G).keys['KeyS']) ny += spd;
     this.px = clamp(nx, 16, W - 16);
     this.py = clamp(ny, H * 0.3, H - 20);
 
     this.shootTimer += G.dt * 60;
     this.recoil = Math.max(0, this.recoil - G.dt * 60 * 0.3);
 
-    if ((G.keys['Space'] || G.keys['KeyE']) && this.shootTimer > 12) {
+    if ((((window as any).G).keys['Space'] || ((window as any).G).keys['KeyE']) && this.shootTimer > 12) {
       this.shootTimer = 0;
       this.recoil = 6;
       let nearest = null, nd = Infinity;
@@ -843,21 +843,21 @@ class EscapePhase {
   }
 
   update(ps: ParticleSystem) {
-    if ((G.keys['ArrowUp'] || G.keys['KeyW'] || G.keys['Space']) && this.onGround && !this.jumpPressed) {
+    if ((((window as any).G).keys['ArrowUp'] || ((window as any).G).keys['KeyW'] || ((window as any).G).keys['Space']) && this.onGround && !this.jumpPressed) {
       this.vy = -9.5;
       this.onGround = false;
       this.jumpPressed = true;
       sound.jump();
       ps.spawnSparkle(this.px, this.py + 10, '#10b981');
     }
-    if (!(G.keys['ArrowUp'] || G.keys['KeyW'] || G.keys['Space'])) this.jumpPressed = false;
+    if (!(((window as any).G).keys['ArrowUp'] || ((window as any).G).keys['KeyW'] || ((window as any).G).keys['Space'])) this.jumpPressed = false;
 
     this.vy += 0.45 * G.dt * 60;
     this.vy = clamp(this.vy, -12, 14);
 
     let vx = 4.2 * G.dt * 60;
-    if (G.keys['ArrowRight'] || G.keys['KeyD']) vx = 5.5 * G.dt * 60;
-    if (G.keys['ArrowLeft'] || G.keys['KeyA']) vx = 2.0 * G.dt * 60;
+    if (((window as any).G).keys['ArrowRight'] || ((window as any).G).keys['KeyD']) vx = 5.5 * G.dt * 60;
+    if (((window as any).G).keys['ArrowLeft'] || ((window as any).G).keys['KeyA']) vx = 2.0 * G.dt * 60;
 
     let nx = this.px + vx;
     let ny = this.py + this.vy * G.dt * 60;
@@ -1160,5 +1160,5 @@ export function resetGameState() {
   G.combo = 0;
   G.score = 0;
   G.invulnerable = 120;
-  G.keys = {};
+  ((window as any).G).keys = {};
 }
