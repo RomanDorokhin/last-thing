@@ -180,6 +180,60 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
           
         />
 
+        {/* Mobile Controls Overlay */}
+        <div className="absolute inset-0 pointer-events-none md:hidden select-none">
+          {/* D-Pad Area */}
+          <div className="absolute bottom-8 left-8 grid grid-cols-3 gap-2 pointer-events-auto">
+            <div />
+            <button 
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
+              onTouchStart={() => G.keys["ArrowUp"] = true}
+              onTouchEnd={() => G.keys["ArrowUp"] = false}
+            >
+              <ArrowUp className="w-6 h-6 text-white" />
+            </button>
+            <div />
+            <button 
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
+              onTouchStart={() => G.keys["ArrowLeft"] = true}
+              onTouchEnd={() => G.keys["ArrowLeft"] = false}
+            >
+              <ArrowLeft className="w-6 h-6 text-white" />
+            </button>
+            <button 
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
+              onTouchStart={() => G.keys["ArrowDown"] = true}
+              onTouchEnd={() => G.keys["ArrowDown"] = false}
+            >
+              <ArrowDown className="w-6 h-6 text-white" />
+            </button>
+            <button 
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
+              onTouchStart={() => G.keys["ArrowRight"] = true}
+              onTouchEnd={() => G.keys["ArrowRight"] = false}
+            >
+              <ArrowRight className="w-6 h-6 text-white" />
+            </button>
+          </div>
+          {/* Action Buttons Area */}
+          <div className="absolute bottom-8 right-8 flex flex-col gap-4 pointer-events-auto">
+            <button 
+              className="w-20 h-20 bg-indigo-500/30 backdrop-blur-md rounded-full border border-indigo-400/40 active:bg-indigo-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-indigo-500/20"
+              onTouchStart={() => G.keys["Space"] = true}
+              onTouchEnd={() => G.keys["Space"] = false}
+            >
+              <div className="text-[10px] text-indigo-200 font-bold mb-1">JUMP</div>
+              <ArrowUp className="w-6 h-6 text-white" />
+            </button>
+            <button 
+              className="w-16 h-16 bg-red-500/30 backdrop-blur-md rounded-full border border-red-400/40 active:bg-red-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-red-500/20"
+              onTouchStart={() => G.keys["KeyE"] = true}
+              onTouchEnd={() => G.keys["KeyE"] = false}
+            >
+              <div className="text-[10px] text-red-200 font-bold">FIRE</div>
+            </button>
+          </div>
+        </div>
         {/* HUD */}
         <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 py-3 pointer-events-none"
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%)' }}>
