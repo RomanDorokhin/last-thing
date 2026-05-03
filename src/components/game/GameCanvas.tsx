@@ -71,7 +71,7 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
     let cd = 3;
     
     // Focus canvas immediately
-    canvasRef.current?.focus();
+    
 
     const cdInterval = window.setInterval(() => {
       cd--;
@@ -80,7 +80,7 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
         clearInterval(cdInterval);
         startGame();
         // Focus again when game actually starts
-        canvasRef.current?.focus();
+        
       }
     }, 800);
     return () => {
@@ -93,6 +93,7 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
   // Keyboard input
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
+      if (["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)) return;
       G.keys[e.code] = true;
       engineRef.current?.handleKey(e.code, e.key, true);
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(e.code)) e.preventDefault();
@@ -101,11 +102,11 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
       G.keys[e.code] = false;
       engineRef.current?.handleKey(e.code, e.key, false);
     };
-    window.addEventListener('keydown', down, { capture: true });
-    window.addEventListener('keyup', up, { capture: true });
+    document.addEventListener('keydown', down);
+    document.addEventListener('keyup', up);
     return () => {
-      window.removeEventListener('keydown', down, { capture: true });
-      window.removeEventListener('keyup', up, { capture: true });
+      document.removeEventListener('keydown', down);
+      document.removeEventListener('keyup', up);
     };
   }, []);
 
@@ -169,14 +170,14 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
           ref={canvasRef}
           width={W}
           height={H}
-          tabIndex={0}
-          autoFocus
+          
+          
           className="w-full h-full block rounded-lg outline-none"
           style={{ imageRendering: 'pixelated', touchAction: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onClick={() => canvasRef.current?.focus()}
+          
         />
 
         {/* HUD */}
@@ -195,7 +196,7 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
 
         {/* Pause Button */}
         <button
-          onClick={togglePause}
+          
           className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 rounded-full backdrop-blur text-white/70 hover:bg-white/20 transition"
         >
           {paused ? '▶' : '⏸'}
@@ -215,10 +216,10 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
         {paused && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20">
             <div className="text-white text-2xl font-bold tracking-widest mb-6 font-mono">ПАУЗА</div>
-            <button onClick={togglePause} className="px-6 py-3 border border-white/40 text-white font-mono text-sm tracking-widest hover:bg-white/10 transition mb-3 rounded">
+            <button  className="px-6 py-3 border border-white/40 text-white font-mono text-sm tracking-widest hover:bg-white/10 transition mb-3 rounded">
               ПРОДОЛЖИТЬ
             </button>
-            <button onClick={() => { engineRef.current?.stop(); onBackToMenu?.(); }} className="px-6 py-3 border border-white/20 text-white/60 font-mono text-sm tracking-widest hover:bg-white/10 transition rounded">
+            <button  className="px-6 py-3 border border-white/20 text-white/60 font-mono text-sm tracking-widest hover:bg-white/10 transition rounded">
               В МЕНЮ
             </button>
           </div>
