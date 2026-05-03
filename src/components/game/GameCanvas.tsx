@@ -1,3 +1,4 @@
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { GameEngine, resetGameState } from '@/game/engine';
 import { G, PHASES, W, H } from '@/game/types';
