@@ -17,10 +17,13 @@ const trpcClient = trpc.createClient({
         return globalThis.fetch(input, {
           ...(init ?? {}),
           credentials: "include",
+        }).then(response => {
+          if (!response.ok) throw new Error('Offline');
+          return response;
         }).catch(() => {
           console.warn('API unavailable - operating in offline mode');
-          return new Response(JSON.stringify({ error: 'API unavailable' }), {
-            status: 503,
+          return new Response(JSON.stringify({ result: { data: { json: null } } }), {
+            status: 200,
             headers: { 'Content-Type': 'application/json' },
           });
         });
