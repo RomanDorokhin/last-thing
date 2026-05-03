@@ -6,6 +6,7 @@ class SoundEngine {
   init() {
     if (this.ctx) return;
     try {
+      if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
       this.masterGain = this.ctx.createGain();
       this.masterGain.gain.value = 0.4;
