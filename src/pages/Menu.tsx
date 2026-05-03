@@ -1,10 +1,9 @@
-import { useNavigate } from 'react-router';
 import { Trophy, Play, Volume2, VolumeX, ChevronRight, Shield, Zap, Target, Users } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { sound } from '@/game/sound';
+import { View } from '../App';
 
-export default function Menu() {
-  const navigate = useNavigate();
+export default function Menu({ onNavigate }: { onNavigate: (v: View) => void }) {
   const [soundOn, setSoundOn] = useState(true);
   const [tgReady, setTgReady] = useState(false);
 
@@ -82,7 +81,7 @@ export default function Menu() {
 
         <div className="flex flex-col gap-3 mb-6">
           <button
-            onClick={() => navigate('/game')}
+            onClick={() => onNavigate('game')}
             className="group relative px-8 py-4 border border-white/30 bg-white/5 backdrop-blur text-white font-mono text-sm tracking-[3px] hover:bg-white/10 hover:border-white/60 transition-all duration-300 rounded overflow-hidden"
           >
             <div className="flex items-center justify-center gap-3">
@@ -93,7 +92,7 @@ export default function Menu() {
           </button>
 
           <button
-            onClick={() => navigate('/leaderboard')}
+            onClick={() => onNavigate('leaderboard')}
             className="group px-8 py-3 border border-white/20 bg-white/5 backdrop-blur text-white/80 font-mono text-sm tracking-[3px] hover:bg-white/10 hover:border-white/50 transition-all duration-300 rounded"
           >
             <div className="flex items-center justify-center gap-3">

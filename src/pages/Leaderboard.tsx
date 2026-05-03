@@ -1,9 +1,8 @@
-import { useNavigate } from 'react-router';
 import { trpc } from '@/providers/trpc';
 import { Trophy, ArrowLeft, Medal, Clock, Users, Gamepad2 } from 'lucide-react';
+import { View } from '../App';
 
-export default function Leaderboard() {
-  const navigate = useNavigate();
+export default function Leaderboard({ onNavigate }: { onNavigate: (v: View) => void }) {
   const { data: leaderboard, isLoading, error: lbError } = trpc.game.getLeaderboard.useQuery({ limit: 20 }, { retry: false });
   const { data: stats } = trpc.game.getStats.useQuery(undefined, { retry: false });
 
@@ -26,7 +25,7 @@ export default function Leaderboard() {
       <div className="sticky top-0 z-10 bg-black/90 backdrop-blur border-b border-white/10 px-4 py-4">
         <div className="max-w-md mx-auto flex items-center justify-between">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => onNavigate('menu')}
             className="flex items-center gap-2 text-white/50 hover:text-white transition text-sm font-mono"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -55,7 +54,7 @@ export default function Leaderboard() {
           </div>
           <div className="border border-white/10 rounded p-3 text-center bg-white/5">
             <Trophy className="w-4 h-4 text-yellow-400 mx-auto mb-1" />
-            <div className="text-lg font-bold font-mono">{stats?.completedRuns || 0}</div>
+            <div className="text-lg font-bold font-mono">{stats?.totalRuns || 0}</div>
             <div className="text-[10px] text-white/40 font-mono">УСПЕХИ</div>
           </div>
         </div>
@@ -105,13 +104,6 @@ export default function Leaderboard() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Phase breakdown hint */}
-        <div className="mt-4 text-center">
-          <div className="text-[10px] text-white/20 font-mono tracking-wider">
-            ОТОБРАЖАЮТСЯ ТОЛЬКО ЗАВЕРШЁННЫЕ ПРОХОЖДЕНИЯ
-          </div>
         </div>
       </div>
     </div>

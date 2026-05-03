@@ -1,12 +1,11 @@
-import { useNavigate } from 'react-router';
 import { useCallback, useState } from 'react';
 import GameCanvas from '@/components/game/GameCanvas';
 import { trpc } from '@/providers/trpc';
 import { Trophy, RotateCcw, Home, Volume2, VolumeX } from 'lucide-react';
 import { sound } from '@/game/sound';
+import { View } from '../App';
 
-export default function Game() {
-  const navigate = useNavigate();
+export default function Game({ onNavigate }: { onNavigate: (v: View) => void }) {
   const [status, setStatus] = useState<'playing' | 'failed' | 'victory'>('playing');
   const [finalTime, setFinalTime] = useState(0);
   const [finalPhaseTimes, setFinalPhaseTimes] = useState<number[]>([0, 0, 0, 0, 0]);
@@ -66,7 +65,7 @@ export default function Game() {
         <GameCanvas
           onFail={handleFail}
           onVictory={handleVictory}
-          onBackToMenu={() => navigate('/')}
+          onBackToMenu={() => onNavigate('menu')}
         />
       )}
 
@@ -86,14 +85,14 @@ export default function Game() {
               ЕЩЁ РАЗ
             </button>
             <button
-              onClick={() => navigate('/leaderboard')}
+              onClick={() => onNavigate('leaderboard')}
               className="px-8 py-3 border border-white/20 text-white/70 font-mono text-sm tracking-[3px] hover:bg-white/5 transition rounded flex items-center gap-2"
             >
               <Trophy className="w-4 h-4 text-yellow-500" />
               ЛИДЕРЫ
             </button>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => onNavigate('menu')}
               className="px-8 py-3 border border-white/10 text-white/50 font-mono text-sm tracking-[3px] hover:bg-white/5 transition rounded flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
@@ -138,14 +137,14 @@ export default function Game() {
               ЕЩЁ РАЗ
             </button>
             <button
-              onClick={() => navigate('/leaderboard')}
+              onClick={() => onNavigate('leaderboard')}
               className="px-8 py-3 border border-white/20 text-white/70 font-mono text-sm tracking-[3px] hover:bg-white/5 transition rounded flex items-center gap-2"
             >
               <Trophy className="w-4 h-4 text-yellow-500" />
               ЛИДЕРЫ
             </button>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => onNavigate('menu')}
               className="px-8 py-3 border border-white/10 text-white/50 font-mono text-sm tracking-[3px] hover:bg-white/5 transition rounded flex items-center gap-2"
             >
               <Home className="w-4 h-4" />
