@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { GameEngine, resetGameState } from '@/game/engine';
 import { G, PHASES, W, H } from '@/game/types';
 import { sound } from '@/game/sound';
+import { View } from '../App';
 
 interface GameCanvasProps {
   onPhaseChange?: (phase: number, label: string, color: string, sub: string) => void;
@@ -70,18 +71,12 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
   useEffect(() => {
     setCountdown(3);
     let cd = 3;
-    
-    // Focus canvas immediately
-    
-
     const cdInterval = window.setInterval(() => {
       cd--;
       setCountdown(cd);
       if (cd <= 0) {
         clearInterval(cdInterval);
         startGame();
-        // Focus again when game actually starts
-        
       }
     }, 800);
     return () => {
@@ -91,65 +86,44 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
     };
   }, [startGame]);
 
-  // Keyboard input
+  // Keyboard and Focus Handling
   useEffect(() => {
+    const handleKey = (code: string, isDown: boolean) => {
+      G.keys[code] = isDown;
+      // Map WASD to Arrows
+      if (code === 'KeyW' || code === 'w' || code === 'W') G.keys['ArrowUp'] = isDown;
+      if (code === 'KeyA' || code === 'a' || code === 'A') G.keys['ArrowLeft'] = isDown;
+      if (code === 'KeyS' || code === 's' || code === 'S') G.keys['ArrowDown'] = isDown;
+      if (code === 'KeyD' || code === 'd' || code === 'D') G.keys['ArrowRight'] = isDown;
+      
+      engineRef.current?.handleKey(code, '', isDown);
+    };
+
     const down = (e: KeyboardEvent) => {
       if (["INPUT", "TEXTAREA"].includes((e.target as HTMLElement)?.tagName)) return;
-      G.keys[e.code] = true;
-      engineRef.current?.handleKey(e.code, e.key, true);
+      handleKey(e.code, true);
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyA', 'KeyS', 'KeyD'].includes(e.code)) e.preventDefault();
     };
+
     const up = (e: KeyboardEvent) => {
-      G.keys[e.code] = false;
-      engineRef.current?.handleKey(e.code, e.key, false);
+      handleKey(e.code, false);
     };
-    document.addEventListener('keydown', down);
-    document.addEventListener('keyup', up);
+
+    const forceFocus = () => {
+      if (G.running) window.focus();
+    };
+
+    document.addEventListener('keydown', down, { capture: true });
+    document.addEventListener('keyup', up, { capture: true });
+    window.addEventListener('touchstart', forceFocus, { passive: true });
+    window.addEventListener('mousedown', forceFocus, { passive: true });
+
     return () => {
-      document.removeEventListener('keydown', down);
-      document.removeEventListener('keyup', up);
+      document.removeEventListener('keydown', down, { capture: true });
+      document.removeEventListener('keyup', up, { capture: true });
+      window.removeEventListener('touchstart', forceFocus);
+      window.removeEventListener('mousedown', forceFocus);
     };
-  }, []);
-
-  // Touch controls
-  const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const touchActive = useRef(false);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    const t = e.touches[0];
-    touchStart.current = { x: t.clientX, y: t.clientY };
-    touchActive.current = true;
-    G.keys['Space'] = true;
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    if (!touchStart.current) return;
-    const t = e.touches[0];
-    const dx = t.clientX - touchStart.current.x;
-    const dy = t.clientY - touchStart.current.y;
-    G.keys['ArrowLeft'] = false;
-    G.keys['ArrowRight'] = false;
-    G.keys['ArrowUp'] = false;
-    G.keys['ArrowDown'] = false;
-    if (Math.abs(dx) > Math.abs(dy)) {
-      if (dx > 20) G.keys['ArrowRight'] = true;
-      else if (dx < -20) G.keys['ArrowLeft'] = true;
-    } else {
-      if (dy < -20) G.keys['ArrowUp'] = true;
-      else if (dy > 20) G.keys['ArrowDown'] = true;
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    touchActive.current = false;
-    G.keys['ArrowLeft'] = false;
-    G.keys['ArrowRight'] = false;
-    G.keys['ArrowUp'] = false;
-    G.keys['ArrowDown'] = false;
-    G.keys['Space'] = false;
-    touchStart.current = null;
   }, []);
 
   const togglePause = () => {
@@ -165,20 +139,14 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
   const noiseColor = noise > 70 ? '#ef4444' : noise > 40 ? '#f59e0b' : '#6366f1';
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center bg-black select-none overflow-hidden">
+    <div className="relative w-full h-full flex items-center justify-center bg-black select-none overflow-hidden touch-none">
       <div className="relative" style={{ width: '100%', maxWidth: 480, aspectRatio: '480/720' }}>
         <canvas
           ref={canvasRef}
           width={W}
           height={H}
-          
-          
           className="w-full h-full block rounded-lg outline-none"
           style={{ imageRendering: 'pixelated', touchAction: 'none' }}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          
         />
 
         {/* Mobile Controls Overlay */}
@@ -187,31 +155,39 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
           <div className="absolute bottom-8 left-8 grid grid-cols-3 gap-2 pointer-events-auto">
             <div />
             <button 
-              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
-              onTouchStart={() => G.keys["ArrowUp"] = true}
-              onTouchEnd={() => G.keys["ArrowUp"] = false}
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
+              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowUp"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowUp"] = false; }}
+              onMouseDown={() => G.keys["ArrowUp"] = true}
+              onMouseUp={() => G.keys["ArrowUp"] = false}
             >
               <ArrowUp className="w-6 h-6 text-white" />
             </button>
             <div />
             <button 
-              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
-              onTouchStart={() => G.keys["ArrowLeft"] = true}
-              onTouchEnd={() => G.keys["ArrowLeft"] = false}
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
+              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowLeft"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowLeft"] = false; }}
+              onMouseDown={() => G.keys["ArrowLeft"] = true}
+              onMouseUp={() => G.keys["ArrowLeft"] = false}
             >
               <ArrowLeft className="w-6 h-6 text-white" />
             </button>
             <button 
-              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
-              onTouchStart={() => G.keys["ArrowDown"] = true}
-              onTouchEnd={() => G.keys["ArrowDown"] = false}
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
+              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowDown"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowDown"] = false; }}
+              onMouseDown={() => G.keys["ArrowDown"] = true}
+              onMouseUp={() => G.keys["ArrowDown"] = false}
             >
               <ArrowDown className="w-6 h-6 text-white" />
             </button>
             <button 
-              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors"
-              onTouchStart={() => G.keys["ArrowRight"] = true}
-              onTouchEnd={() => G.keys["ArrowRight"] = false}
+              className="w-14 h-14 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 active:bg-white/30 flex items-center justify-center transition-colors touch-none"
+              onTouchStart={(e) => { e.preventDefault(); G.keys["ArrowRight"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); G.keys["ArrowRight"] = false; }}
+              onMouseDown={() => G.keys["ArrowRight"] = true}
+              onMouseUp={() => G.keys["ArrowRight"] = false}
             >
               <ArrowRight className="w-6 h-6 text-white" />
             </button>
@@ -219,22 +195,27 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
           {/* Action Buttons Area */}
           <div className="absolute bottom-8 right-8 flex flex-col gap-4 pointer-events-auto">
             <button 
-              className="w-20 h-20 bg-indigo-500/30 backdrop-blur-md rounded-full border border-indigo-400/40 active:bg-indigo-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-indigo-500/20"
-              onTouchStart={() => G.keys["Space"] = true}
-              onTouchEnd={() => G.keys["Space"] = false}
+              className="w-20 h-20 bg-indigo-500/30 backdrop-blur-md rounded-full border border-indigo-400/40 active:bg-indigo-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-indigo-500/20 touch-none"
+              onTouchStart={(e) => { e.preventDefault(); G.keys["Space"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); G.keys["Space"] = false; }}
+              onMouseDown={() => G.keys["Space"] = true}
+              onMouseUp={() => G.keys["Space"] = false}
             >
               <div className="text-[10px] text-indigo-200 font-bold mb-1">JUMP</div>
               <ArrowUp className="w-6 h-6 text-white" />
             </button>
             <button 
-              className="w-16 h-16 bg-red-500/30 backdrop-blur-md rounded-full border border-red-400/40 active:bg-red-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-red-500/20"
-              onTouchStart={() => G.keys["KeyE"] = true}
-              onTouchEnd={() => G.keys["KeyE"] = false}
+              className="w-16 h-16 bg-red-500/30 backdrop-blur-md rounded-full border border-red-400/40 active:bg-red-500/50 flex flex-col items-center justify-center transition-colors shadow-lg shadow-red-500/20 touch-none"
+              onTouchStart={(e) => { e.preventDefault(); G.keys["KeyE"] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); G.keys["KeyE"] = false; }}
+              onMouseDown={() => G.keys["KeyE"] = true}
+              onMouseUp={() => G.keys["KeyE"] = false}
             >
               <div className="text-[10px] text-red-200 font-bold">FIRE</div>
             </button>
           </div>
         </div>
+        
         {/* HUD */}
         <div className="absolute top-0 left-0 right-0 flex justify-between items-center px-4 py-3 pointer-events-none"
           style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%)' }}>
@@ -251,8 +232,8 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
 
         {/* Pause Button */}
         <button
-          
-          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 rounded-full backdrop-blur text-white/70 hover:bg-white/20 transition"
+          onClick={togglePause}
+          className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center bg-white/10 rounded-full backdrop-blur text-white/70 hover:bg-white/20 transition pointer-events-auto"
         >
           {paused ? '▶' : '⏸'}
         </button>
@@ -271,10 +252,10 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
         {paused && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-20">
             <div className="text-white text-2xl font-bold tracking-widest mb-6 font-mono">ПАУЗА</div>
-            <button  className="px-6 py-3 border border-white/40 text-white font-mono text-sm tracking-widest hover:bg-white/10 transition mb-3 rounded">
+            <button onClick={togglePause} className="px-6 py-3 border border-white/40 text-white font-mono text-sm tracking-widest hover:bg-white/10 transition mb-3 rounded pointer-events-auto">
               ПРОДОЛЖИТЬ
             </button>
-            <button  className="px-6 py-3 border border-white/20 text-white/60 font-mono text-sm tracking-widest hover:bg-white/10 transition rounded">
+            <button onClick={onBackToMenu} className="px-6 py-3 border border-white/20 text-white/60 font-mono text-sm tracking-widest hover:bg-white/10 transition rounded pointer-events-auto">
               В МЕНЮ
             </button>
           </div>
