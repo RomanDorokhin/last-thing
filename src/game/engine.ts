@@ -342,7 +342,7 @@ class HackPhase {
     c.fillText('ВЗЛОМ СЕЙФА v2.1', fx + 16, fy + 24);
     c.fillStyle = 'rgba(255,255,255,0.3)';
     c.textAlign = 'right';
-    c.fillText(`РАУНД ${this.round + 1}/${this.maxRounds}`, fx + fw - 16, fy + 24);
+    c.fillText(`v1.1 - РАУНД ${this.round + 1}/${this.maxRounds}`, fx + fw - 16, fy + 24);
 
     const prog = this.round / this.maxRounds;
     c.fillStyle = 'rgba(255,255,255,0.1)';

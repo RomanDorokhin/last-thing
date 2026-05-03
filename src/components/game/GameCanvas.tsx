@@ -181,7 +181,7 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
         />
 
         {/* Mobile Controls Overlay */}
-        <div className="absolute inset-0 pointer-events-none md:hidden select-none">
+        <div className="absolute inset-0 pointer-events-none flex select-none">
           {/* D-Pad Area */}
           <div className="absolute bottom-8 left-8 grid grid-cols-3 gap-2 pointer-events-auto">
             <div />
