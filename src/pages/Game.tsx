@@ -11,7 +11,9 @@ export default function Game() {
   const [finalTime, setFinalTime] = useState(0);
   const [finalPhaseTimes, setFinalPhaseTimes] = useState<number[]>([0, 0, 0, 0, 0]);
   const [soundOn, setSoundOn] = useState(true);
-  const submitScore = trpc.game.submitScore.useMutation();
+  const submitScore = trpc.game.submitScore.useMutation({
+    onError: (err) => console.log("Score not saved (Offline mode):", err.message)
+  });
 
   const handleFail = useCallback(() => {
     setStatus('failed');

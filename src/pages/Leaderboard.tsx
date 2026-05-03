@@ -4,8 +4,8 @@ import { Trophy, ArrowLeft, Medal, Clock, Users, Gamepad2 } from 'lucide-react';
 
 export default function Leaderboard() {
   const navigate = useNavigate();
-  const { data: leaderboard, isLoading } = trpc.game.getLeaderboard.useQuery({ limit: 20 });
-  const { data: stats } = trpc.game.getStats.useQuery();
+  const { data: leaderboard, isLoading, error: lbError } = trpc.game.getLeaderboard.useQuery({ limit: 20 }, { retry: false });
+  const { data: stats } = trpc.game.getStats.useQuery(undefined, { retry: false });
 
   const getMedal = (idx: number) => {
     if (idx === 0) return <Medal className="w-5 h-5 text-yellow-400" />;
@@ -71,7 +71,14 @@ export default function Leaderboard() {
             <div className="p-8 text-center text-white/30 font-mono text-sm">ЗАГРУЗКА...</div>
           )}
 
-          {leaderboard && leaderboard.length === 0 && (
+          {lbError && (
+            <div className="p-8 text-center text-red-400/50 font-mono text-sm">
+              ОФФЛАЙН-РЕЖИМ<br />
+              <span className="text-[10px] text-white/20 uppercase">Сервер недоступен</span>
+            </div>
+          )}
+
+          {leaderboard && leaderboard.length === 0 && !lbError && (
             <div className="p-8 text-center text-white/30 font-mono text-sm">
               ПОКА НЕТ РЕЗУЛЬТАТОВ<br />
               <span className="text-[10px]">БУДЬ ПЕРВЫМ!</span>

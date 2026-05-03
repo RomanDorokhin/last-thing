@@ -69,12 +69,18 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
   useEffect(() => {
     setCountdown(3);
     let cd = 3;
+    
+    // Focus canvas immediately
+    canvasRef.current?.focus();
+
     const cdInterval = window.setInterval(() => {
       cd--;
       setCountdown(cd);
       if (cd <= 0) {
         clearInterval(cdInterval);
         startGame();
+        // Focus again when game actually starts
+        canvasRef.current?.focus();
       }
     }, 800);
     return () => {
@@ -87,10 +93,12 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
   // Keyboard input
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
+      G.keys[e.code] = true;
       engineRef.current?.handleKey(e.code, e.key, true);
       if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
     };
     const up = (e: KeyboardEvent) => {
+      G.keys[e.code] = false;
       engineRef.current?.handleKey(e.code, e.key, false);
     };
     window.addEventListener('keydown', down);
@@ -161,11 +169,14 @@ export default function GameCanvas({ onPhaseChange, onFail, onVictory, onBackToM
           ref={canvasRef}
           width={W}
           height={H}
-          className="w-full h-full block rounded-lg"
+          tabIndex={0}
+          autoFocus
+          className="w-full h-full block rounded-lg outline-none"
           style={{ imageRendering: 'pixelated', touchAction: 'none' }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onClick={() => canvasRef.current?.focus()}
         />
 
         {/* HUD */}

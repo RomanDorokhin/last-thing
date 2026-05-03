@@ -1013,7 +1013,6 @@ export class GameEngine {
     G.noise = 0;
     G.running = true;
     G.paused = false;
-    G.keys = {};
     G.dt = 0;
     G.lastTime = 0;
     G.shake = 0;
@@ -1045,7 +1044,6 @@ export class GameEngine {
   }
 
   handleKey(code: string, key: string, down: boolean) {
-    G.keys[code] = down;
     if (G.phase === 1 && down && G.running) {
       if (code === 'Backspace') this.hack.onKey('BACKSPACE');
       else this.hack.onKey(key);
@@ -1154,7 +1152,6 @@ export function resetGameState() {
   G.noise = 0;
   G.running = false;
   G.paused = false;
-  G.keys = {};
   G.dt = 0;
   G.lastTime = 0;
   G.rafId = 0;
