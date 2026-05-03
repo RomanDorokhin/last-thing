@@ -68,7 +68,7 @@ class StealthPhase {
   }
 
   update(ps: ParticleSystem) {
-    const spd = this.speed * G.dt;
+    const spd = this.speed * G.dt * 60;
     let nx = this.px, ny = this.py;
     if (G.keys['ArrowLeft'] || G.keys['KeyA']) nx -= spd;
     if (G.keys['ArrowRight'] || G.keys['KeyD']) nx += spd;
@@ -458,7 +458,7 @@ class ChasePhase {
   }
 
   update(ps: ParticleSystem) {
-    const spd = this.speed * G.dt;
+    const spd = this.speed * G.dt * 60;
     let nx = this.px, ny = this.py;
     if (G.keys['ArrowLeft'] || G.keys['KeyA']) nx -= spd * 1.4;
     if (G.keys['ArrowRight'] || G.keys['KeyD']) nx += spd * 1.4;
@@ -487,8 +487,8 @@ class ChasePhase {
       const dx = this.px - cop.x;
       const dy = (this.py) - (cop.y + this.scrollY);
       const d = Math.hypot(dx, dy) || 1;
-      cop.x += (dx / d) * cop.speed * G.dt * 0.8;
-      cop.y += spd * 1.5 * G.dt;
+      cop.x += (dx / d) * cop.speed * G.dt * 60 * 0.8;
+      cop.y += spd * 1.5 * G.dt * 60;
       cop.flashTimer += G.dt * 60;
 
       if (dist(this.px, this.py, cop.x, cop.y + this.scrollY) < 18) {
@@ -649,7 +649,7 @@ class ShooterPhase {
   }
 
   update(ps: ParticleSystem) {
-    const spd = 4 * G.dt;
+    const spd = 4 * G.dt * 60;
     let nx = this.px, ny = this.py;
     if (G.keys['ArrowLeft'] || G.keys['KeyA']) nx -= spd * 1.5;
     if (G.keys['ArrowRight'] || G.keys['KeyD']) nx += spd * 1.5;
@@ -678,14 +678,14 @@ class ShooterPhase {
     }
 
     for (const b of this.bullets) {
-      b.x += b.vx * G.dt * 3; b.y += b.vy * G.dt * 3; b.life--;
+      b.x += b.vx * G.dt * 60 * 3; b.y += b.vy * G.dt * 60 * 3; b.life--;
     }
     this.bullets = this.bullets.filter(b => b.life > 0);
 
     for (const e of this.enemies) {
       e.moveTimer += G.dt * 60;
       if (e.moveTimer > 60) { e.moveTimer = 0; e.vx = rnd(-2, 2); }
-      e.x = clamp(e.x + e.vx * G.dt * 1.5, 30, W - 30);
+      e.x = clamp(e.x + e.vx * G.dt * 60 * 1.5, 30, W - 30);
 
       e.shootTimer -= G.dt * 60;
       if (e.shootTimer <= 0) {
@@ -713,7 +713,7 @@ class ShooterPhase {
     }
 
     for (const b of this.eBullets) {
-      b.x += b.vx * G.dt * 3; b.y += b.vy * G.dt * 3; b.life--;
+      b.x += b.vx * G.dt * 60 * 3; b.y += b.vy * G.dt * 60 * 3; b.life--;
       if (dist(b.x, b.y, this.px, this.py) < 12) {
         G.noise = Math.min(100, G.noise + 20);
         G.shake = 6;
@@ -852,15 +852,15 @@ class EscapePhase {
     }
     if (!(G.keys['ArrowUp'] || G.keys['KeyW'] || G.keys['Space'])) this.jumpPressed = false;
 
-    this.vy += 0.45 * G.dt;
+    this.vy += 0.45 * G.dt * 60;
     this.vy = clamp(this.vy, -12, 14);
 
-    let vx = 4.2 * G.dt;
-    if (G.keys['ArrowRight'] || G.keys['KeyD']) vx = 5.5 * G.dt;
-    if (G.keys['ArrowLeft'] || G.keys['KeyA']) vx = 2.0 * G.dt;
+    let vx = 4.2 * G.dt * 60;
+    if (G.keys['ArrowRight'] || G.keys['KeyD']) vx = 5.5 * G.dt * 60;
+    if (G.keys['ArrowLeft'] || G.keys['KeyA']) vx = 2.0 * G.dt * 60;
 
     let nx = this.px + vx;
-    let ny = this.py + this.vy * G.dt;
+    let ny = this.py + this.vy * G.dt * 60;
     this.onGround = false;
 
     for (const p of this.platforms) {
