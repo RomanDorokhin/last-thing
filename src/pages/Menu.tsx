@@ -8,6 +8,16 @@ export default function Menu() {
   const [soundOn, setSoundOn] = useState(true);
   const [tgReady, setTgReady] = useState(false);
 
+  const stars = useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
+    id: i,
+    width: Math.random() * 4 + 1,
+    height: Math.random() * 4 + 1,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    duration: 3 + Math.random() * 4,
+    delay: Math.random() * 3,
+  })), []);
+
   useEffect(() => {
     const tg = (window as any).Telegram?.WebApp;
     if (tg) {
@@ -23,16 +33,6 @@ export default function Menu() {
     sound.setEnabled(next);
   };
 
-  const stars = useMemo(() => Array.from({ length: 30 }).map((_, i) => ({
-    id: i,
-    width: s.width,
-    height: s.height,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    duration: 3 + Math.random() * 4,
-    delay: Math.random() * 3,
-  })), []);
-
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -41,8 +41,8 @@ export default function Menu() {
             key={s.id}
             className="absolute rounded-full bg-white/10"
             style={{
-              width: Math.random() * 4 + 1,
-              height: Math.random() * 4 + 1,
+              width: s.width,
+              height: s.height,
               left: `${s.left}%`,
               top: `${s.top}%`,
               animation: `float ${s.duration}s ease-in-out infinite`,
