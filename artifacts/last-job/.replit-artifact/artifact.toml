@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "ПОСЛЕДНЕЕ ДЕЛО"
+version = "1.0.0"
+id = "artifacts/last-job"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21904
+
+[services.development]
+run = "pnpm --filter @workspace/last-job run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/last-job", "run", "build" ]
+publicDir = "artifacts/last-job/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21904"
+BASE_PATH = "/"
